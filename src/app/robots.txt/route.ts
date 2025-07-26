@@ -1,0 +1,58 @@
+import { SITE_CONFIG } from '@/lib/constants';
+
+export function GET() {
+  const robotsTxt = `User-agent: *
+Allow: /
+
+# Legal pages
+Allow: /privacy
+Allow: /terms
+Allow: /cookies
+Allow: /disclaimer
+Allow: /about
+Allow: /contact
+
+# Blog content
+Allow: /blog
+Allow: /categories
+
+# Sitemap
+Sitemap: ${SITE_CONFIG.url}/sitemap.xml
+
+# Crawl delay (be polite)
+Crawl-delay: 1
+
+# Specific rules for search engines
+User-agent: Googlebot
+Allow: /
+
+User-agent: Bingbot
+Allow: /
+
+User-agent: Yandex
+Allow: /
+
+User-agent: NaverBot
+Allow: /
+Crawl-delay: 1
+
+User-agent: DaumBot
+Allow: /
+Crawl-delay: 1
+
+# Block common bad bots
+User-agent: AhrefsBot
+Disallow: /
+
+User-agent: MJ12bot
+Disallow: /
+
+User-agent: SemrushBot
+Disallow: /`;
+
+  return new Response(robotsTxt, {
+    headers: {
+      'Content-Type': 'text/plain',
+    },
+  });
+}

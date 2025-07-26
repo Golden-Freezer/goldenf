@@ -1,0 +1,285 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// NextAuth.js 필수 테이블
+model Account {
+  id                String  @id @default(cuid())
+  userId            String
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String? @db.Text
+  access_token      String? @db.Text
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String? @db.Text
+  session_state     String?
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerAccountId])
+  @@map("accounts")
+}
+
+model Session {
+  id           String   @id @default(cuid())
+  sessionToken String   @unique
+  userId       String
+  expires      DateTime
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("sessions")
+}
+
+model User {
+  id            String    @id @default(cuid())
+  name          String?
+  email         String    @unique
+  emailVerified DateTime?
+  image         String?
+  password      String?   // 관리자 직접 로그인용
+  role          UserRole  @default(USER)
+  
+  // 관계
+  accounts    Account[]
+  sessions    Session[]
+  posts       Post[]
+  comments    Comment[]
+  fileUploads FileUpload[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("users")
+}
+
+model VerificationToken {
+  identifier String
+  token      String   @unique
+  expires    DateTime
+
+  @@unique([identifier, token])
+  @@map("verification_tokens")
+}
+
+// 사용자 역할
+enum UserRole {
+  USER
+  ADMIN
+  SUPER_ADMIN
+}
+
+// 카테고리 (총무 업무 관련)
+model Category {
+  id          String @id @default(cuid())
+  name        String @unique // 예: "회계관리", "인사관리", "문서관리"
+  slug        String @unique
+  description String?
+  color       String? // 카테고리 색상 (hex)
+  order       Int     @default(0) // 정렬 순서
+  isActive    Boolean @default(true)
+
+  // 관계
+  posts Post[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("categories")
+}
+
+// 태그
+model Tag {
+  id       String @id @default(cuid())
+  name     String @unique
+  slug     String @unique
+  color    String? // 태그 색상
+  isActive Boolean @default(true)
+
+  // 관계
+  posts PostTag[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("tags")
+}
+
+// 블로그 포스트
+model Post {
+  id          String      @id @default(cuid())
+  title       String      // 한글 제목 지원
+  slug        String      @unique
+  content     String      @db.Text // 긴 한글 콘텐츠 지원
+  excerpt     String?     @db.Text // 요약
+  status      PostStatus  @default(DRAFT)
+  publishedAt DateTime?
+  
+  // SEO 메타데이터
+  metaTitle       String? // SEO 제목
+  metaDescription String? @db.Text // SEO 설명 (한글)
+  metaKeywords    String[] // SEO 키워드 배열
+  ogImage         String? // Open Graph 이미지
+  
+  // 관계
+  authorId   String
+  author     User     @relation(fields: [authorId], references: [id])
+  categoryId String?
+  category   Category? @relation(fields: [categoryId], references: [id])
+  
+  // 다대다 관계
+  tags       PostTag[]
+  comments   Comment[]
+  uploads    PostUpload[]
+
+  // 통계
+  viewCount    Int @default(0)
+  commentCount Int @default(0)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("posts")
+}
+
+// 포스트 상태
+enum PostStatus {
+  DRAFT     // 임시저장
+  PUBLISHED // 게시됨
+  ARCHIVED  // 보관됨
+}
+
+// 포스트-태그 중간 테이블
+model PostTag {
+  postId String
+  tagId  String
+
+  post Post @relation(fields: [postId], references: [id], onDelete: Cascade)
+  tag  Tag  @relation(fields: [tagId], references: [id], onDelete: Cascade)
+
+  @@id([postId, tagId])
+  @@map("post_tags")
+}
+
+// 댓글 시스템
+model Comment {
+  id      String        @id @default(cuid())
+  content String        @db.Text // 한글 댓글 지원
+  status  CommentStatus @default(PENDING)
+  
+  // 관계
+  postId   String
+  post     Post   @relation(fields: [postId], references: [id], onDelete: Cascade)
+  authorId String?
+  author   User?  @relation(fields: [authorId], references: [id])
+  
+  // 대댓글 지원
+  parentId String?
+  parent   Comment?  @relation("CommentReplies", fields: [parentId], references: [id])
+  replies  Comment[] @relation("CommentReplies")
+  
+  // 익명 댓글 지원
+  guestName  String? // 비회원 이름
+  guestEmail String? // 비회원 이메일
+  ipAddress  String? // IP 주소
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("comments")
+}
+
+// 댓글 상태
+enum CommentStatus {
+  PENDING   // 승인 대기
+  APPROVED  // 승인됨
+  REJECTED  // 거부됨
+  SPAM      // 스팸
+}
+
+// 파일 업로드 (문서/프로그램)
+model FileUpload {
+  id           String     @id @default(cuid())
+  filename     String     // 원본 파일명 (한글 지원)
+  originalName String     // 업로드시 원본명
+  mimeType     String     // MIME 타입
+  size         BigInt     // 파일 크기 (bytes)
+  path         String     // 파일 경로
+  url          String?    // 접근 URL
+  category     FileCategory @default(DOCUMENT)
+  
+  // 메타데이터
+  description String? @db.Text // 파일 설명 (한글)
+  version     String? // 버전 정보
+  isPublic    Boolean @default(false) // 공개 여부
+  
+  // 관계
+  uploaderId String
+  uploader   User   @relation(fields: [uploaderId], references: [id])
+  
+  // 포스트 연결
+  posts PostUpload[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("file_uploads")
+}
+
+// 파일 카테고리
+enum FileCategory {
+  DOCUMENT    // 문서
+  PROGRAM     // 프로그램
+  IMAGE       // 이미지
+  SPREADSHEET // 스프레드시트
+  PRESENTATION // 프레젠테이션
+  ARCHIVE     // 압축파일
+  OTHER       // 기타
+}
+
+// 포스트-파일 연결
+model PostUpload {
+  postId String
+  fileId String
+
+  post Post       @relation(fields: [postId], references: [id], onDelete: Cascade)
+  file FileUpload @relation(fields: [fileId], references: [id], onDelete: Cascade)
+
+  @@id([postId, fileId])
+  @@map("post_uploads")
+}
+
+// 사이트 설정
+model SiteSetting {
+  id    String @id @default(cuid())
+  key   String @unique // 설정 키
+  value String @db.Text // 설정 값 (JSON 등 가능)
+  type  String @default("string") // 값 타입
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("site_settings")
+}
+
+// 방문자 통계 (선택사항)
+model VisitorLog {
+  id        String   @id @default(cuid())
+  ipAddress String
+  userAgent String?
+  referer   String?
+  path      String
+  timestamp DateTime @default(now())
+
+  @@map("visitor_logs")
+}

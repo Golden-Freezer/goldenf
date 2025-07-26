@@ -1,0 +1,20 @@
+# Redirect old URLs to maintain SEO
+/home / 301
+/blog /posts 301
+
+# Korean SEO optimizations
+/kr/* /ko/:splat 301
+/korean/* /ko/:splat 301
+
+# Admin panel security
+/admin/* /admin/:splat 200! Role=admin
+/api/admin/* /api/admin/:splat 200! Role=admin
+
+# API routes handling
+/api/* /.netlify/functions/:splat 200
+
+# Fallback for SPA routing
+/* /index.html 200
+
+# 404 handling with Korean support
+/404 /404.html 404
