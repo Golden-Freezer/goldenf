@@ -9,7 +9,7 @@ interface MainLayoutProps {
 
 export function MainLayout({ children, showReadingProgress = false }: MainLayoutProps) {
   return (
-    <div className="min-h-screen flex flex-col bg-white dark:bg-gray-900 transition-colors duration-300">
+    <div className="min-h-screen flex flex-col bg-white dark:bg-gray-900 transition-colors duration-200">
       {showReadingProgress && <ReadingProgress />}
       <Header />
       

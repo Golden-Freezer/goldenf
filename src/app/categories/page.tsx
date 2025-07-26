@@ -2,6 +2,7 @@ import { Metadata } from 'next';
 import Link from 'next/link';
 import { Badge } from '@/components/ui/badge';
 import { Card, CardContent } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
 import { SITE_CONFIG, BLOG_CATEGORIES } from '@/lib/constants';
 import { getPostsByCategory } from '@/lib/blog-utils';
 import { AdSenseAd } from '@/components/ads/adsense-ad';
@@ -30,32 +31,6 @@ export default function CategoriesPage() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-sky-50">
-      {/* Header Navigation */}
-      <nav className="bg-white/80 backdrop-blur-sm border-b border-gray-200 sticky top-0 z-50">
-        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between items-center py-4">
-            <Link href="/" className="flex items-center space-x-2">
-              <div className="text-2xl">📋</div>
-              <span className="text-xl font-bold text-gray-900">골든에프</span>
-            </Link>
-            <div className="flex items-center space-x-6">
-              <Link href="/blog" className="text-gray-600 hover:text-gray-900 transition-colors">
-                전체 글
-              </Link>
-              <Link href="/categories" className="text-blue-600 font-medium">
-                카테고리
-              </Link>
-              <Link href="/about" className="text-gray-600 hover:text-gray-900 transition-colors">
-                소개
-              </Link>
-              <Link href="/contact" className="text-gray-600 hover:text-gray-900 transition-colors">
-                문의
-              </Link>
-            </div>
-          </div>
-        </div>
-      </nav>
-
       <main className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Header */}
         <div className="text-center mb-12">
@@ -210,18 +185,16 @@ export default function CategoriesPage() {
               더 나은 콘텐츠로 보답하겠습니다.
             </p>
             <div className="flex flex-wrap justify-center gap-4">
-              <Link
-                href="/contact"
-                className="bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 transition-colors"
-              >
-                문의하기
-              </Link>
-              <Link
-                href="/blog"
-                className="bg-white text-blue-600 px-6 py-3 rounded-lg border border-blue-600 hover:bg-blue-50 transition-colors"
-              >
-                전체 글 보기
-              </Link>
+              <Button asChild>
+                <Link href="/contact">
+                  문의하기
+                </Link>
+              </Button>
+              <Button variant="outline" asChild>
+                <Link href="/blog">
+                  전체 글 보기
+                </Link>
+              </Button>
             </div>
           </div>
         </section>
@@ -232,41 +205,24 @@ export default function CategoriesPage() {
             빠른 링크
           </h2>
           <div className="flex flex-wrap justify-center gap-3">
-            <Link
-              href="/blog"
-              className="px-4 py-2 bg-white text-gray-700 rounded-lg border border-gray-200 hover:border-gray-300 hover:bg-gray-50 transition-colors text-sm"
-            >
-              📝 전체 글
-            </Link>
-            <Link
-              href="/about"
-              className="px-4 py-2 bg-white text-gray-700 rounded-lg border border-gray-200 hover:border-gray-300 hover:bg-gray-50 transition-colors text-sm"
-            >
-              ℹ️ 소개
-            </Link>
-            <Link
-              href="/contact"
-              className="px-4 py-2 bg-white text-gray-700 rounded-lg border border-gray-200 hover:border-gray-300 hover:bg-gray-50 transition-colors text-sm"
-            >
-              💬 문의
-            </Link>
+            <Button variant="outline" size="sm" asChild>
+              <Link href="/blog">
+                📝 전체 글
+              </Link>
+            </Button>
+            <Button variant="outline" size="sm" asChild>
+              <Link href="/about">
+                ℹ️ 소개
+              </Link>
+            </Button>
+            <Button variant="outline" size="sm" asChild>
+              <Link href="/contact">
+                💬 문의
+              </Link>
+            </Button>
           </div>
         </section>
       </main>
-
-      {/* Footer */}
-      <footer className="bg-gray-50 border-t border-gray-200 mt-16">
-        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-          <div className="text-center text-gray-600">
-            <p>&copy; 2024 골든에프. All rights reserved.</p>
-            <div className="flex justify-center space-x-4 mt-2">
-              <Link href="/privacy" className="text-sm hover:text-gray-900">개인정보처리방침</Link>
-              <Link href="/terms" className="text-sm hover:text-gray-900">이용약관</Link>
-              <Link href="/disclaimer" className="text-sm hover:text-gray-900">면책사항</Link>
-            </div>
-          </div>
-        </div>
-      </footer>
     </div>
   );
 }

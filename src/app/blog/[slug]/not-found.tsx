@@ -9,29 +9,6 @@ export default function BlogPostNotFound() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-sky-50">
-      {/* Header Navigation */}
-      <nav className="bg-white/80 backdrop-blur-sm border-b border-gray-200">
-        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between items-center py-4">
-            <Link href="/" className="flex items-center space-x-2">
-              <div className="text-2xl">📋</div>
-              <span className="text-xl font-bold text-gray-900">골든에프</span>
-            </Link>
-            <div className="flex items-center space-x-6">
-              <Link href="/blog" className="text-gray-600 hover:text-gray-900 transition-colors">
-                전체 글
-              </Link>
-              <Link href="/about" className="text-gray-600 hover:text-gray-900 transition-colors">
-                소개
-              </Link>
-              <Link href="/contact" className="text-gray-600 hover:text-gray-900 transition-colors">
-                문의
-              </Link>
-            </div>
-          </div>
-        </div>
-      </nav>
-
       <main className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
         {/* 404 Content */}
         <div className="text-center mb-12">
@@ -162,20 +139,6 @@ export default function BlogPostNotFound() {
           </div>
         </section>
       </main>
-
-      {/* Footer */}
-      <footer className="bg-gray-50 border-t border-gray-200 mt-16">
-        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-          <div className="text-center text-gray-600">
-            <p>&copy; 2024 골든에프. All rights reserved.</p>
-            <div className="flex justify-center space-x-4 mt-2">
-              <Link href="/privacy" className="text-sm hover:text-gray-900">개인정보처리방침</Link>
-              <Link href="/terms" className="text-sm hover:text-gray-900">이용약관</Link>
-              <Link href="/disclaimer" className="text-sm hover:text-gray-900">면책사항</Link>
-            </div>
-          </div>
-        </div>
-      </footer>
     </div>
   );
 }

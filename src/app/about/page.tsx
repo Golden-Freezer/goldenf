@@ -104,11 +104,11 @@ export default function AboutPage() {
                     <span className="text-sm text-muted-foreground">
                       {category.postCount}개 글
                     </span>
-                    <Button variant="outline" size="sm" asChild>
-                      <Link href={`/categories/${category.slug}`}>
+                    <Link href={`/categories/${category.slug}`}>
+                      <Button variant="outline" size="sm">
                         보기
-                      </Link>
-                    </Button>
+                      </Button>
+                    </Link>
                   </div>
                 </CardContent>
               </Card>
@@ -241,12 +241,12 @@ export default function AboutPage() {
               골든에프 총무블로그와 함께 전문성을 키우고 업무 효율성을 높여보세요
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <Button size="lg" asChild>
-                <Link href="/blog">최신 글 보기</Link>
-              </Button>
-              <Button variant="outline" size="lg" asChild>
-                <Link href="/contact">문의하기</Link>
-              </Button>
+              <Link href="/blog">
+                <Button size="lg">최신 글 보기</Button>
+              </Link>
+              <Link href="/contact">
+                <Button variant="outline" size="lg">문의하기</Button>
+              </Link>
             </div>
           </div>
         </section>

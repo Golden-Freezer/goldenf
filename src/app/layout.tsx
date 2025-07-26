@@ -3,6 +3,8 @@ import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { SITE_CONFIG, SCHEMA_ORG } from "@/lib/constants";
 import { CookieConsentBanner } from "@/components/legal/cookie-consent-banner";
+import { Header } from "@/components/layout/header";
+import { Footer } from "@/components/layout/footer";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -136,7 +138,13 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} font-korean antialiased bg-background text-foreground`}
       >
-        {children}
+        <div className="min-h-screen flex flex-col bg-white dark:bg-gray-900 transition-colors duration-300">
+          <Header />
+          <main className="flex-1 pt-16">
+            {children}
+          </main>
+          <Footer />
+        </div>
         <CookieConsentBanner />
       </body>
     </html>
