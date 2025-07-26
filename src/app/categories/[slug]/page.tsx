@@ -342,8 +342,8 @@ export default function CategoryPage({ params }: CategoryPageProps) {
               <Link href="/disclaimer" className="text-sm hover:text-gray-900">면책사항</Link>
             </div>
           </div>
-        </footer>
-      </div>
+        </div>
+      </footer>
     </div>
   );
 }

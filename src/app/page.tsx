@@ -294,9 +294,8 @@ export default function Home() {
 
         {/* CTA Section */}
         <section className="py-20 lg:py-24 bg-gradient-to-r from-blue-600 to-purple-600 relative overflow-hidden">
-          {/* Background Pattern */}
+          {/* Background Overlay */}
           <div className="absolute inset-0 bg-black/10"></div>
-          <div className="absolute inset-0 bg-[url('data:image/svg+xml,%3Csvg width="60" height="60" viewBox="0 0 60 60" xmlns="http://www.w3.org/2000/svg"%3E%3Cg fill="none" fill-rule="evenodd"%3E%3Cg fill="%23ffffff" fill-opacity="0.1"%3E%3Cpath d="M30 30c0-11.046-8.954-20-20-20s-20 8.954-20 20 8.954 20 20 20 20-8.954 20-20zM10 10v40M50 10v40M10 30h40"/%3E%3C/g%3E%3C/g%3E%3C/svg%3E')]"></div>
           
           <div className="container-modern relative z-10 text-center text-white">
             <div className="max-w-3xl mx-auto">

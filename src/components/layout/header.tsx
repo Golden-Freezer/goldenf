@@ -21,7 +21,7 @@ import {
   Search,
   BookOpen,
   Home,
-  Category,
+  FolderOpen,
   User,
   Mail
 } from 'lucide-react';
@@ -93,7 +93,7 @@ function HeaderContent({ theme, toggleTheme }: HeaderProps) {
   const getNavIcon = (label: string) => {
     switch (label) {
       case '홈': return <Home className="w-4 h-4" />;
-      case '카테고리': return <Category className="w-4 h-4" />;
+      case '카테고리': return <FolderOpen className="w-4 h-4" />;
       case '전체 글': return <BookOpen className="w-4 h-4" />;
       case '소개': return <User className="w-4 h-4" />;
       case '문의': return <Mail className="w-4 h-4" />;

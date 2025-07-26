@@ -609,7 +609,6 @@ body {
 }
 
 .prose-modern blockquote::before {
-  content: '"';
   position: absolute;
   top: -10px;
   left: var(--space-4);

@@ -335,7 +335,7 @@ const config: Config = {
               position: 'relative',
               padding: '1rem 1.5rem',
               '&::before': {
-                content: '"""',
+                content: '"\\201C"',
                 position: 'absolute',
                 top: '-10px',
                 left: '1rem',
@@ -353,10 +353,10 @@ const config: Config = {
               fontWeight: '500',
               border: '1px solid var(--border)',
               '&::before': {
-                content: '""',
+                content: 'none',
               },
               '&::after': {
-                content: '""',
+                content: 'none',
               },
             },
             pre: {
