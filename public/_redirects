@@ -1,0 +1,6 @@
+# Cloudflare Pages redirects
+# Format: from to [status]
+
+# Example redirects (uncomment and modify as needed):
+# /old-page /new-page 301
+# /api/* https://api.yourdomain.com/:splat 200

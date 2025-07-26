@@ -1,5 +1,23 @@
 # Cloudflare Pages Deployment Guide for Golden Freezer Blog
 
+## ⚠️ Important Configuration Changes
+
+This project has been updated to use **standard Next.js static export** instead of Cloudflare's Next-on-Pages adapter:
+
+### What Changed:
+1. **Removed** `@cloudflare/next-on-pages` - not needed for static export
+2. **Build command** changed from `npx @cloudflare/next-on-pages@1` to `npm run build`
+3. **Output directory** remains as `out`
+4. **Next.js config** uses `output: 'export'` for static generation
+5. **Images** are unoptimized (required for static export)
+6. **CSS imports** updated from `@import "tailwindcss"` to `@tailwind` directives
+7. **Functions directory** renamed to prevent edge runtime detection
+
+### Key Files:
+- `.pages.yml` - Overrides Cloudflare's auto-detection
+- `next.config.ts` - Configured for static export
+- `wrangler.toml` - Points to `out` directory
+
 ## 🚀 Quick Setup
 
 ### Prerequisites
@@ -26,13 +44,15 @@
 
 ### 2. Build Configuration
 
-**Framework preset:** Next.js (Static Export)
+**Framework preset:** None (Static HTML Export)
 
 **Build settings:**
-- Build command: `npm run build:cloudflare`
-- Build output directory: `.next`
+- Build command: `npm run build`
+- Build output directory: `out`
 - Root directory: `/`
-- Node.js version: `18`
+- Node.js version: `20`
+
+**Important:** DO NOT use the Next.js preset or `@cloudflare/next-on-pages`. This project uses standard Next.js static export.
 
 ### 3. Environment Variables
 
@@ -121,11 +141,14 @@ git push origin main
 
 **Manual Deployment:**
 ```bash
-# Local deployment
-npm run build:cloudflare
+# Local build and test
+npm run build
+npx serve out
+
+# Deploy using Wrangler
 npm run deploy
 
-# Preview deployment
+# Preview deployment locally
 npm run preview
 ```
 
@@ -163,8 +186,13 @@ npm run preview
 1. **Build Failures:**
    ```bash
    # Check build locally
-   npm run build:cloudflare
+   npm run build
    npm run type-check
+   
+   # Clean cache if needed
+   rm -rf .next out
+   npm ci
+   npm run build
    ```
 
 2. **Environment Variables:**

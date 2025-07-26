@@ -1,0 +1,16 @@
+# Cloudflare Pages build configuration
+# This overrides the automatic detection and uses standard Next.js build
+
+# Build configuration
+build:
+  command: npm run build
+  directory: out
+  environment:
+    NODE_VERSION: "20"
+
+# Preview deployments
+preview:
+  command: npm run build
+  directory: out
+  environment:
+    NODE_VERSION: "20"
