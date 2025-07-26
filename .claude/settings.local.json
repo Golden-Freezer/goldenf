@@ -16,7 +16,8 @@
       "Bash(npm ls:*)",
       "Bash(npx prisma generate:*)",
       "Bash(mv:*)",
-      "Bash(npm run deploy:*)"
+      "Bash(npm run deploy:*)",
+      "Bash(npm run dev:*)"
     ],
     "deny": []
   }
