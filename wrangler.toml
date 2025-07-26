@@ -1,38 +1,18 @@
+# Cloudflare Pages configuration
+# This file is used for Pages deployment settings
+# Configure build settings in the Cloudflare Pages dashboard instead
+
 name = "goldenf-blog"
 compatibility_date = "2024-07-15"
-compatibility_flags = ["nodejs_compat"]
 
-[env.production]
-name = "goldenf-blog"
-zone_id = "" # Add your Cloudflare zone ID here
-account_id = "" # Add your Cloudflare account ID here
+# Pages build output directory
+pages_build_output_dir = "out"
 
-# Pages configuration
-[env.production.vars]
-NODE_ENV = "production"
-NEXT_PUBLIC_SITE_URL = "https://goldenf.pages.dev"
-
-# Build configuration for Next.js
-[[env.production.build]]
-command = "npm run build"
-cwd = "."
-
-# Environment variables (set these in Cloudflare Dashboard)
-# NEXT_PUBLIC_SUPABASE_URL
-# NEXT_PUBLIC_SUPABASE_ANON_KEY
-# SUPABASE_SERVICE_ROLE_KEY
-# NEXTAUTH_SECRET
-# NEXTAUTH_URL
-# DATABASE_URL
-
-# Functions configuration for API routes
-[env.production.functions]
-compatibility_date = "2024-07-15"
-compatibility_flags = ["nodejs_compat"]
-
-# Korean locale optimization
-[env.production.r2_buckets]
-# Optional: Add R2 bucket for file uploads if needed
-
-# Custom domains (configure in Cloudflare Pages dashboard)
-# domains = ["yourdomain.com", "www.yourdomain.com"]
+# Environment variables for Pages
+# Set these in the Cloudflare Pages dashboard:
+# - NEXT_PUBLIC_SUPABASE_URL
+# - NEXT_PUBLIC_SUPABASE_ANON_KEY  
+# - SUPABASE_SERVICE_ROLE_KEY
+# - NEXTAUTH_SECRET
+# - NEXTAUTH_URL
+# - DATABASE_URL

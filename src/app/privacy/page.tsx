@@ -212,7 +212,7 @@ export default function PrivacyPolicyPage() {
               </div>
               <div>
                 <h3 className="font-semibold text-foreground mb-2">쿠키 설정 거부 방법</h3>
-                <p>웹브라우저 상단의 도구 > 인터넷 옵션 > 개인정보 메뉴의 옵션 설정을 통해 쿠키 저장을 거부할 수 있습니다.</p>
+                <p>웹브라우저 상단의 도구 &gt; 인터넷 옵션 &gt; 개인정보 메뉴의 옵션 설정을 통해 쿠키 저장을 거부할 수 있습니다.</p>
               </div>
             </div>
           </div>

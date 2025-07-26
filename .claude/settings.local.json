@@ -13,10 +13,10 @@
       "Bash(git init:*)",
       "Bash(git remote add:*)",
       "Bash(git add:*)",
-      "Bash(git commit:*)",
-      "Bash(git push:*)",
-      "Bash(git branch:*)",
-      "Bash(git pull:*)"
+      "Bash(npm ls:*)",
+      "Bash(npx prisma generate:*)",
+      "Bash(mv:*)",
+      "Bash(npm run deploy:*)"
     ],
     "deny": []
   }

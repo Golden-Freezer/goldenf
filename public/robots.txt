@@ -1,7 +1,4 @@
-import { SITE_CONFIG } from '@/lib/constants';
-
-export function GET() {
-  const robotsTxt = `User-agent: *
+User-agent: *
 Allow: /
 
 # Legal pages
@@ -17,7 +14,7 @@ Allow: /blog
 Allow: /categories
 
 # Sitemap
-Sitemap: ${SITE_CONFIG.url}/sitemap.xml
+Sitemap: https://goldenf.pages.dev/sitemap.xml
 
 # Crawl delay (be polite)
 Crawl-delay: 1
@@ -48,11 +45,4 @@ User-agent: MJ12bot
 Disallow: /
 
 User-agent: SemrushBot
-Disallow: /`;
-
-  return new Response(robotsTxt, {
-    headers: {
-      'Content-Type': 'text/plain',
-    },
-  });
-}
+Disallow: /
