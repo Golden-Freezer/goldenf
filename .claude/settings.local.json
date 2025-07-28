@@ -25,7 +25,10 @@
       "Bash(rename:*)",
       "Bash(ren:*)",
       "Bash(if exist cache rmdir /s /q cache)",
-      "Bash(if exist .next rmdir /s /q .next)"
+      "Bash(if exist .next rmdir /s /q .next)",
+      "Bash(NODE_ENV=production npm run build)",
+      "Bash(set NODE_ENV=production)",
+      "Bash(taskkill:*)"
     ],
     "deny": []
   }

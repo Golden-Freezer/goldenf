@@ -18,6 +18,16 @@
 /out/
 /cache/
 
+# webpack cache (prevent large cache files for Cloudflare Pages)
+**/cache/
+**/webpack/
+**/.cache/
+**/node_modules/.cache/
+/.webpack/
+/webpack/
+**/*.pack
+**/*.pack.gz
+
 # production
 /build
 
