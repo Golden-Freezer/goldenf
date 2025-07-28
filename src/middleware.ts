@@ -40,4 +40,4 @@ export const config = {
 }
 
 // Edge Runtime 명시적 설정
-export const runtime = 'edge'
+export const runtime = 'experimental-edge'

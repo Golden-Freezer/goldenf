@@ -112,29 +112,6 @@ const nextConfig: NextConfig = {
   
   // Custom page extensions
   pageExtensions: ['tsx', 'ts', 'jsx', 'js'],
-
-  // Cloudflare Pages 특화 설정
-  async headers() {
-    return [
-      {
-        source: '/(.*)',
-        headers: [
-          {
-            key: 'X-Frame-Options',
-            value: 'DENY',
-          },
-          {
-            key: 'X-Content-Type-Options',
-            value: 'nosniff',
-          },
-          {
-            key: 'Referrer-Policy',
-            value: 'origin-when-cross-origin',
-          },
-        ],
-      },
-    ]
-  },
 };
 
 export default nextConfig;
