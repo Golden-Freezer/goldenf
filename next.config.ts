@@ -46,10 +46,14 @@ const nextConfig: NextConfig = {
 
   // Webpack configuration for optimization
   webpack: (config, { dev, isServer }) => {
-    // Optimize bundle size
+    // Optimize bundle size and prevent cache issues
     if (!dev && !isServer) {
+      // Disable webpack cache to prevent large cache files
+      config.cache = false;
+      
       config.optimization.splitChunks = {
         chunks: 'all',
+        maxSize: 20000000, // 20MB limit for individual chunks
         cacheGroups: {
           default: false,
           vendors: false,
@@ -57,9 +61,20 @@ const nextConfig: NextConfig = {
             name: 'vendor',
             chunks: 'all',
             test: /node_modules/,
+            maxSize: 20000000,
+          },
+          common: {
+            name: 'common',
+            minChunks: 2,
+            chunks: 'all',
+            maxSize: 20000000,
           },
         },
       };
+      
+      // Minimize output size
+      config.optimization.usedExports = true;
+      config.optimization.sideEffects = false;
     }
 
     return config;
