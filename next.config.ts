@@ -39,57 +39,30 @@ const nextConfig: NextConfig = {
     // ALWAYS disable webpack cache to prevent large cache files
     config.cache = false;
     
-    // Optimize bundle size for production builds
-    if (!dev) {
-      // Configure chunk splitting
-      config.optimization.splitChunks = {
-        chunks: 'all',
-        maxSize: 15000000, // 15MB limit for individual chunks
-        minSize: 20000,
-        maxAsyncRequests: 30,
-        maxInitialRequests: 30,
-        cacheGroups: {
-          default: false,
-          vendors: false,
-          // Vendor chunk for third-party libraries
-          vendor: {
-            name: isServer ? 'vendor-server' : 'vendor',
-            chunks: 'all',
-            test: /[\\/]node_modules[\\/]/,
-            maxSize: 15000000,
-            priority: 20,
-          },
-          // Common chunk for shared code
-          common: {
-            name: isServer ? 'common-server' : 'common',
-            minChunks: 2,
-            chunks: 'all',
-            maxSize: 10000000,
-            priority: 10,
-          },
-          // React specific chunk
-          react: {
-            name: isServer ? 'react-server' : 'react',
-            chunks: 'all',
-            test: /[\\/]node_modules[\\/](react|react-dom)[\\/]/,
-            maxSize: 5000000,
-            priority: 30,
-          },
-        },
-      };
-      
-      // Additional optimizations
-      config.optimization.usedExports = true;
-      config.optimization.sideEffects = false;
+    // 정적 출력을 위한 기본 설정만 유지
+    if (!dev && !isServer) {
+      // 클라이언트 측에서만 최적화 적용
       config.optimization.minimize = true;
-      config.optimization.concatenateModules = true;
-      config.optimization.nodeEnv = 'production';
     }
 
-    // Edge Runtime 호환성을 위한 설정
+    // Cloudflare Pages 호환성을 위한 설정
     if (isServer) {
-      config.target = 'node';
+      // Next.js 내부 Pages Router 관련 처리 방지
+      config.resolve = config.resolve || {};
+      config.resolve.alias = config.resolve.alias || {};
+      config.resolve.alias['next/document'] = false;
+      config.resolve.alias['next/app'] = false;
+      
+      // 불필요한 서버 코드 제외
       config.externals = config.externals || [];
+      if (typeof config.externals === 'object' && !Array.isArray(config.externals)) {
+        config.externals = [config.externals];
+      }
+      
+      config.externals.push(
+        'next/document',
+        '@next/document'
+      );
     }
 
     return config;
@@ -99,6 +72,7 @@ const nextConfig: NextConfig = {
   async generateBuildId() {
     return 'goldenf-blog-build'
   },
+
 
   // Memory and performance optimization
   env: {

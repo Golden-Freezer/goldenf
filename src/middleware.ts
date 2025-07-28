@@ -39,5 +39,5 @@ export const config = {
   ]
 }
 
-// Edge Runtime 명시적 설정
-export const runtime = 'experimental-edge'
+// Static export에서는 middleware 비활성화
+// export const runtime = 'nodejs'
