@@ -1,13 +1,9 @@
 import { NextAuthOptions } from 'next-auth'
-import { PrismaAdapter } from '@next-auth/prisma-adapter'
 import CredentialsProvider from 'next-auth/providers/credentials'
-import bcrypt from 'bcryptjs'
-import { prisma } from './prisma'
 import { supabase } from './supabase'
 import { UserRole } from '@/types/supabase'
 
 export const authOptions: NextAuthOptions = {
-  adapter: PrismaAdapter(prisma),
   providers: [
     CredentialsProvider({
       name: 'credentials',
@@ -20,43 +16,51 @@ export const authOptions: NextAuthOptions = {
           return null
         }
 
-        // Use Supabase for user lookup with fallback to Prisma
-        const { data: supabaseUser } = await supabase
-          .from('users')
-          .select('*')
-          .eq('email', credentials.email)
-          .single()
+        try {
+          // Supabase를 통한 인증 (Edge Runtime 호환)
+          const { data: user, error } = await supabase
+            .from('users')
+            .select('*')
+            .eq('email', credentials.email)
+            .single()
 
-        const user = supabaseUser || await prisma.user.findUnique({
-          where: {
-            email: credentials.email
+          if (error || !user) {
+            return null
           }
-        })
 
-        if (!user || !user.password) {
+          // 패스워드 검증은 Supabase Auth 또는 별도 API 엔드포인트에서 처리
+          // Edge Runtime에서는 bcrypt 사용 불가
+          const passwordResponse = await fetch(`${process.env.NEXTAUTH_URL}/api/auth/verify-password`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              email: credentials.email,
+              password: credentials.password
+            })
+          })
+
+          const passwordResult = await passwordResponse.json()
+          
+          if (!passwordResult.valid) {
+            return null
+          }
+
+          return {
+            id: user.id,
+            email: user.email,
+            name: user.name,
+            role: user.role,
+          }
+        } catch (error) {
+          console.error('Auth error:', error)
           return null
-        }
-
-        const isPasswordValid = await bcrypt.compare(
-          credentials.password,
-          user.password
-        )
-
-        if (!isPasswordValid) {
-          return null
-        }
-
-        return {
-          id: user.id,
-          email: user.email,
-          name: user.name,
-          role: user.role,
         }
       }
     })
   ],
   session: {
-    strategy: 'jwt'
+    strategy: 'jwt',
+    maxAge: 30 * 24 * 60 * 60, // 30 days
   },
   callbacks: {
     async jwt({ token, user }) {
@@ -78,6 +82,18 @@ export const authOptions: NextAuthOptions = {
     error: '/auth/error',
   },
   secret: process.env.NEXTAUTH_SECRET,
+  // Edge Runtime 호환성을 위한 설정
+  cookies: {
+    sessionToken: {
+      name: `next-auth.session-token`,
+      options: {
+        httpOnly: true,
+        sameSite: 'lax',
+        path: '/',
+        secure: process.env.NODE_ENV === 'production'
+      }
+    }
+  }
 }
 
 // NextAuth.js 타입 확장
