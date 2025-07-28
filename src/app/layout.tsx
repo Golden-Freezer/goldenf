@@ -5,6 +5,7 @@ import { SITE_CONFIG, SCHEMA_ORG } from "@/lib/constants";
 import { CookieConsentBanner } from "@/components/legal/cookie-consent-banner";
 import { Header } from "@/components/layout/header";
 import { Footer } from "@/components/layout/footer";
+import { Toaster } from "@/components/ui/toaster";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -85,8 +86,8 @@ export default function RootLayout({
             __html: JSON.stringify(SCHEMA_ORG),
           }}
         />
-        <meta name="theme-color" content="#0ea5e9" />
-        <meta name="msapplication-TileColor" content="#0ea5e9" />
+        <meta name="theme-color" content="#22c55e" />
+        <meta name="msapplication-TileColor" content="#22c55e" />
         
         {/* Google Analytics & AdSense - Initial consent state (denied) */}
         <script
@@ -136,9 +137,9 @@ export default function RootLayout({
         )}
       </head>
       <body
-        className={`${geistSans.variable} ${geistMono.variable} font-korean antialiased bg-background text-foreground`}
+        className={`${geistSans.variable} ${geistMono.variable} font-korean antialiased bg-white dark:bg-gray-900 text-gray-900 dark:text-white transition-colors duration-300`}
       >
-        <div className="min-h-screen flex flex-col bg-white dark:bg-gray-900 transition-colors duration-300">
+        <div className="min-h-screen flex flex-col bg-gradient-warm">
           <Header />
           <main className="flex-1 pt-16">
             {children}
@@ -146,6 +147,7 @@ export default function RootLayout({
           <Footer />
         </div>
         <CookieConsentBanner />
+        <Toaster />
       </body>
     </html>
   );

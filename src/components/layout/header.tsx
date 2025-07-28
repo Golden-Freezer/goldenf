@@ -88,9 +88,9 @@ function HeaderContent({ theme, toggleTheme }: HeaderProps) {
   return (
     <header 
       className={cn(
-        "fixed top-0 left-0 right-0 z-50 transition-all duration-200",
+        "fixed top-0 left-0 right-0 z-50 transition-all duration-300",
         isScrolled 
-          ? "bg-white/80 dark:bg-gray-900/80 backdrop-blur-md border-b border-gray-200/50 dark:border-gray-800/50" 
+          ? "bg-white/95 dark:bg-gray-900/95 backdrop-blur-lg border-b border-gray-200/60 dark:border-gray-800/60 shadow-sm" 
           : "bg-white dark:bg-gray-900 border-b border-gray-200 dark:border-gray-800"
       )}
     >
@@ -99,12 +99,12 @@ function HeaderContent({ theme, toggleTheme }: HeaderProps) {
           {/* Logo */}
           <Link 
             href="/" 
-            className="flex items-center gap-2 hover:opacity-70 transition-opacity"
+            className="flex items-center gap-3 hover:opacity-80 transition-all duration-200 group"
           >
-            <div className="w-8 h-8 bg-gradient-to-br from-blue-500 to-blue-600 rounded-md flex items-center justify-center text-white font-semibold text-sm">
-              골
+            <div className="w-8 h-8 bg-gradient-to-br from-green-500 to-green-600 rounded-lg flex items-center justify-center text-white font-bold text-sm shadow-md group-hover:shadow-lg group-hover:scale-105 transition-all duration-200">
+              G
             </div>
-            <span className="font-semibold text-lg text-gray-900 dark:text-white hidden sm:block">
+            <span className="font-bold text-lg text-gray-900 dark:text-white hidden sm:block">
               {SITE_CONFIG.name}
             </span>
           </Link>
@@ -119,8 +119,8 @@ function HeaderContent({ theme, toggleTheme }: HeaderProps) {
                       <Button 
                         variant="ghost" 
                         className={cn(
-                          "h-9 px-4 text-sm font-medium text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-gray-800",
-                          pathname.startsWith('/categories') && "text-gray-900 dark:text-white bg-gray-100 dark:bg-gray-800"
+                          "h-10 px-4 text-sm font-medium text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white hover:bg-green-50 dark:hover:bg-green-900/20 rounded-lg transition-all duration-200",
+                          pathname.startsWith('/categories') && "text-green-600 dark:text-green-400 bg-green-50 dark:bg-green-900/20"
                         )}
                       >
                         {item.label}
@@ -129,15 +129,15 @@ function HeaderContent({ theme, toggleTheme }: HeaderProps) {
                     </DropdownMenuTrigger>
                     <DropdownMenuContent 
                       align="start" 
-                      className="w-48 p-1 bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800"
+                      className="w-48 p-2 bg-white dark:bg-gray-900 border border-gray-200/60 dark:border-gray-800/60 shadow-lg backdrop-blur-sm rounded-lg"
                     >
                       {item.children.map((child) => (
                         <DropdownMenuItem key={child.href} asChild>
                           <Link 
                             href={child.href}
                             className={cn(
-                              "px-3 py-2 text-sm text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-gray-800 rounded-md",
-                              pathname === child.href && "text-gray-900 dark:text-white bg-gray-100 dark:bg-gray-800"
+                              "px-3 py-2 text-sm text-gray-600 dark:text-gray-300 hover:text-green-600 dark:hover:text-green-400 hover:bg-green-50 dark:hover:bg-green-900/20 rounded-md transition-all duration-200",
+                              pathname === child.href && "text-green-600 dark:text-green-400 bg-green-50 dark:bg-green-900/20"
                             )}
                           >
                             {child.label}
@@ -151,8 +151,8 @@ function HeaderContent({ theme, toggleTheme }: HeaderProps) {
                     <Button 
                       variant="ghost"
                       className={cn(
-                        "h-9 px-4 text-sm font-medium text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-gray-800",
-                        pathname === item.href && "text-gray-900 dark:text-white bg-gray-100 dark:bg-gray-800"
+                        "h-10 px-4 text-sm font-medium text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white hover:bg-green-50 dark:hover:bg-green-900/20 rounded-lg transition-all duration-200",
+                        pathname === item.href && "text-green-600 dark:text-green-400 bg-green-50 dark:bg-green-900/20"
                       )}
                     >
                       {item.label}
@@ -169,7 +169,7 @@ function HeaderContent({ theme, toggleTheme }: HeaderProps) {
             <Button 
               variant="ghost" 
               size="sm"
-              className="hidden md:flex h-9 w-9 p-0 text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-gray-800"
+              className="hidden md:flex h-10 w-10 p-0 text-gray-600 dark:text-gray-300 hover:text-green-600 dark:hover:text-green-400 hover:bg-green-50 dark:hover:bg-green-900/20 rounded-lg transition-all duration-200"
             >
               <Search className="h-4 w-4" />
             </Button>
@@ -179,7 +179,7 @@ function HeaderContent({ theme, toggleTheme }: HeaderProps) {
               variant="ghost"
               size="sm"
               onClick={toggleTheme}
-              className="h-9 w-9 p-0 text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-gray-800"
+              className="h-10 w-10 p-0 text-gray-600 dark:text-gray-300 hover:text-green-600 dark:hover:text-green-400 hover:bg-green-50 dark:hover:bg-green-900/20 rounded-lg transition-all duration-200"
               aria-label="테마 변경"
             >
               {theme === 'dark' ? (
@@ -194,7 +194,7 @@ function HeaderContent({ theme, toggleTheme }: HeaderProps) {
               variant="ghost"
               size="sm"
               onClick={() => setIsMenuOpen(!isMenuOpen)}
-              className="lg:hidden h-9 w-9 p-0 text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-gray-800"
+              className="lg:hidden h-10 w-10 p-0 text-gray-600 dark:text-gray-300 hover:text-green-600 dark:hover:text-green-400 hover:bg-green-50 dark:hover:bg-green-900/20 rounded-lg transition-all duration-200"
               aria-label="메뉴 열기"
             >
               {isMenuOpen ? (
@@ -208,13 +208,13 @@ function HeaderContent({ theme, toggleTheme }: HeaderProps) {
 
         {/* Mobile Menu */}
         {isMenuOpen && (
-          <div className="lg:hidden absolute top-full left-0 right-0 bg-white dark:bg-gray-900 border-b border-gray-200 dark:border-gray-800">
-            <nav className="container-minimal py-4">
-              <div className="space-y-1">
+          <div className="lg:hidden absolute top-full left-0 right-0 bg-white/95 dark:bg-gray-900/95 backdrop-blur-lg border-b border-gray-200/60 dark:border-gray-800/60">
+            <nav className="container-minimal py-6">
+              <div className="space-y-2">
                 {NAVIGATION_MENU.map((item) => (
                   <div key={item.href}>
                     {item.children ? (
-                      <div className="space-y-1">
+                      <div className="space-y-2">
                         <div className="px-3 py-2 text-sm font-medium text-gray-500 dark:text-gray-400">
                           {item.label}
                         </div>
@@ -225,8 +225,8 @@ function HeaderContent({ theme, toggleTheme }: HeaderProps) {
                               href={child.href}
                               onClick={() => setIsMenuOpen(false)}
                               className={cn(
-                                "block px-3 py-2 text-sm text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-gray-800 rounded-md",
-                                pathname === child.href && "text-gray-900 dark:text-white bg-gray-100 dark:bg-gray-800"
+                                "block px-3 py-2 text-sm text-gray-600 dark:text-gray-300 hover:text-green-600 dark:hover:text-green-400 hover:bg-green-50 dark:hover:bg-green-900/20 rounded-md transition-all duration-200",
+                                pathname === child.href && "text-green-600 dark:text-green-400 bg-green-50 dark:bg-green-900/20"
                               )}
                             >
                               {child.label}
@@ -239,8 +239,8 @@ function HeaderContent({ theme, toggleTheme }: HeaderProps) {
                         href={item.href}
                         onClick={() => setIsMenuOpen(false)}
                         className={cn(
-                          "block px-3 py-2 text-sm font-medium text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-gray-800 rounded-md",
-                          pathname === item.href && "text-gray-900 dark:text-white bg-gray-100 dark:bg-gray-800"
+                          "block px-3 py-2 text-sm font-medium text-gray-600 dark:text-gray-300 hover:text-green-600 dark:hover:text-green-400 hover:bg-green-50 dark:hover:bg-green-900/20 rounded-md transition-all duration-200",
+                          pathname === item.href && "text-green-600 dark:text-green-400 bg-green-50 dark:bg-green-900/20"
                         )}
                       >
                         {item.label}
@@ -251,10 +251,10 @@ function HeaderContent({ theme, toggleTheme }: HeaderProps) {
               </div>
 
               {/* Mobile Search */}
-              <div className="mt-4 pt-4 border-t border-gray-200 dark:border-gray-800">
+              <div className="mt-6 pt-4 border-t border-gray-200/60 dark:border-gray-800/60">
                 <Button 
                   variant="ghost" 
-                  className="w-full justify-start gap-2 text-sm text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-gray-800"
+                  className="w-full justify-start gap-2 text-sm text-gray-600 dark:text-gray-300 hover:text-green-600 dark:hover:text-green-400 hover:bg-green-50 dark:hover:bg-green-900/20 rounded-md transition-all duration-200"
                 >
                   <Search className="h-4 w-4" />
                   검색

@@ -1,8 +1,8 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  // Output configuration for Cloudflare Pages
-  output: 'export',
+  // Output configuration for Cloudflare Pages - temporarily disabled due to admin routes
+  // output: 'export',
   trailingSlash: false,
   skipTrailingSlashRedirect: true,
   distDir: 'out',
@@ -66,6 +66,14 @@ const nextConfig: NextConfig = {
   },
 
   // Additional Cloudflare Pages optimization
+  
+  // Generate consistent build ID
+  async generateBuildId() {
+    return 'goldenf-blog-build'
+  },
+
+  // Custom page extensions to identify admin routes
+  pageExtensions: ['tsx', 'ts', 'jsx', 'js'],
 };
 
 export default nextConfig;

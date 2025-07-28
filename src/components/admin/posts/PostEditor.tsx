@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -27,19 +27,30 @@ import {
   Plus,
   Image,
   Paperclip,
-  Settings
+  Settings,
+  Loader2
 } from 'lucide-react';
 import { BLOG_CATEGORIES } from '@/lib/constants';
 import { generateSlug } from '@/lib/utils';
+import { useToast } from '@/components/ui/use-toast';
+import { createPost, updatePost, getCategories, getTags, findOrCreateTags, associatePostTags } from '@/lib/database';
+import { PostStatus } from '@/types/supabase';
+import { useSession } from 'next-auth/react';
+import { useRouter } from 'next/navigation';
 
-export function PostEditor() {
+interface PostEditorProps {
+  postId?: string;
+  initialData?: any;
+}
+
+export function PostEditor({ postId, initialData }: PostEditorProps = {}) {
   const [title, setTitle] = useState('');
   const [slug, setSlug] = useState('');
   const [excerpt, setExcerpt] = useState('');
   const [content, setContent] = useState('');
   const [categoryId, setCategoryId] = useState('');
   const [tags, setTags] = useState<string[]>([]);
-  const [status, setStatus] = useState('DRAFT');
+  const [status, setStatus] = useState<PostStatus>('DRAFT');
   const [showPreview, setShowPreview] = useState(false);
   const [seoData, setSeoData] = useState({
     metaTitle: '',
@@ -47,6 +58,53 @@ export function PostEditor() {
     metaKeywords: [] as string[],
     ogImage: '',
   });
+  const [saving, setSaving] = useState(false);
+  const [categories, setCategories] = useState<any[]>([]);
+  const [availableTags, setAvailableTags] = useState<any[]>([]);
+  
+  const { data: session } = useSession();
+  const { toast } = useToast();
+  const router = useRouter();
+
+  // Initialize form with existing data if editing
+  useEffect(() => {
+    if (initialData) {
+      setTitle(initialData.title || '');
+      setSlug(initialData.slug || '');
+      setExcerpt(initialData.excerpt || '');
+      setContent(initialData.content || '');
+      setCategoryId(initialData.categoryId || '');
+      setStatus(initialData.status || 'DRAFT');
+      setSeoData({
+        metaTitle: initialData.metaTitle || '',
+        metaDescription: initialData.metaDescription || '',
+        metaKeywords: initialData.metaKeywords || [],
+        ogImage: initialData.ogImage || '',
+      });
+      
+      // Extract tag names from the tags array
+      if (initialData.tags && Array.isArray(initialData.tags)) {
+        setTags(initialData.tags.map((t: any) => t.tag?.name || t.name || t));
+      }
+    }
+  }, [initialData]);
+
+  // Load categories and tags
+  useEffect(() => {
+    const loadData = async () => {
+      try {
+        const [categoriesData, tagsData] = await Promise.all([
+          getCategories(),
+          getTags()
+        ]);
+        setCategories(categoriesData || []);
+        setAvailableTags(tagsData || []);
+      } catch (error) {
+        console.error('Failed to load categories/tags:', error);
+      }
+    };
+    loadData();
+  }, []);
 
   const handleTitleChange = (value: string) => {
     setTitle(value);
@@ -55,30 +113,88 @@ export function PostEditor() {
     }
   };
 
-  const handleSave = async (publishStatus: 'DRAFT' | 'PUBLISHED') => {
+  const handleSave = async (publishStatus: PostStatus) => {
+    if (!title.trim()) {
+      toast({
+        title: '오류',
+        description: '제목을 입력해주세요.',
+        variant: 'destructive',
+      });
+      return;
+    }
+
+    if (!content.trim()) {
+      toast({
+        title: '오류',
+        description: '본문 내용을 입력해주세요.',
+        variant: 'destructive',
+      });
+      return;
+    }
+
+    if (!session?.user?.id) {
+      toast({
+        title: '오류',
+        description: '로그인이 필요합니다.',
+        variant: 'destructive',
+      });
+      return;
+    }
+
     const postData = {
       title,
-      slug,
+      slug: slug || generateSlug(title),
       content,
       excerpt,
       status: publishStatus,
-      categoryId,
-      tags,
+      categoryId: categoryId || null,
       metaTitle: seoData.metaTitle || title,
       metaDescription: seoData.metaDescription || excerpt,
       metaKeywords: seoData.metaKeywords,
       ogImage: seoData.ogImage,
+      authorId: session.user.id,
+      publishedAt: publishStatus === 'PUBLISHED' ? new Date().toISOString() : null,
     };
 
     try {
-      // Implement save logic here
-      console.log('Saving post:', postData);
+      setSaving(true);
       
-      // Show success message
-      alert(publishStatus === 'DRAFT' ? '임시저장되었습니다.' : '게시글이 발행되었습니다.');
+      let savedPost;
+      if (postId) {
+        // Update existing post
+        savedPost = await updatePost(postId, postData);
+      } else {
+        // Create new post
+        savedPost = await createPost(postData);
+      }
+      
+      // Handle tags association
+      if (tags.length > 0) {
+        const tagIds = await findOrCreateTags(tags);
+        await associatePostTags(savedPost.id, tagIds);
+      }
+      
+      toast({
+        title: '성공',
+        description: publishStatus === 'DRAFT' ? '임시저장되었습니다.' : '게시글이 발행되었습니다.',
+      });
+      
+      // Redirect to posts list or edit page
+      if (!postId && savedPost?.id) {
+        router.push(`/admin/posts/${savedPost.id}/edit`);
+      } else {
+        router.push('/admin/posts');
+      }
     } catch (error) {
       console.error('Error saving post:', error);
-      alert('저장 중 오류가 발생했습니다.');
+      const errorMessage = error instanceof Error ? error.message : '저장 중 오류가 발생했습니다.';
+      toast({
+        title: '오류',
+        description: errorMessage,
+        variant: 'destructive',
+      });
+    } finally {
+      setSaving(false);
     }
   };
 
@@ -233,16 +349,36 @@ export function PostEditor() {
                 onClick={() => handleSave('DRAFT')}
                 variant="outline" 
                 className="w-full"
+                disabled={saving}
               >
-                <Save className="w-4 h-4 mr-2" />
-                임시저장
+                {saving ? (
+                  <>
+                    <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                    저장 중...
+                  </>
+                ) : (
+                  <>
+                    <Save className="w-4 h-4 mr-2" />
+                    임시저장
+                  </>
+                )}
               </Button>
               <Button 
                 onClick={() => handleSave('PUBLISHED')}
                 className="w-full"
+                disabled={saving}
               >
-                <Send className="w-4 h-4 mr-2" />
-                게시하기
+                {saving ? (
+                  <>
+                    <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                    저장 중...
+                  </>
+                ) : (
+                  <>
+                    <Send className="w-4 h-4 mr-2" />
+                    게시하기
+                  </>
+                )}
               </Button>
             </div>
           </CardContent>
@@ -259,10 +395,9 @@ export function PostEditor() {
                 <SelectValue placeholder="카테고리 선택" />
               </SelectTrigger>
               <SelectContent>
-                {BLOG_CATEGORIES.map((category) => (
+                {categories.map((category) => (
                   <SelectItem key={category.id} value={category.id}>
                     <div className="flex items-center space-x-2">
-                      <span>{category.icon}</span>
                       <span>{category.name}</span>
                     </div>
                   </SelectItem>

@@ -194,6 +194,82 @@ export const getTags = async (activeOnly = true) => {
   return data
 }
 
+export const createTag = async (tagData: {
+  name: string
+  slug: string
+  color?: string | null
+  isActive?: boolean
+}) => {
+  const { data, error } = await supabase
+    .from('tags')
+    .insert(tagData)
+    .select()
+    .single()
+
+  if (error) {
+    console.error('Create tag error:', error)
+    throw new Error(`태그 생성 실패: ${error.message}`)
+  }
+
+  return data
+}
+
+export const findOrCreateTags = async (tagNames: string[]) => {
+  if (tagNames.length === 0) return []
+
+  const tagIds: string[] = []
+
+  for (const name of tagNames) {
+    const slug = name.toLowerCase().replace(/\s+/g, '-').replace(/[^\w\-가-힣]/g, '')
+    
+    // Check if tag exists
+    const { data: existingTag } = await supabase
+      .from('tags')
+      .select('id')
+      .eq('name', name)
+      .single()
+
+    if (existingTag) {
+      tagIds.push(existingTag.id)
+    } else {
+      // Create new tag
+      const newTag = await createTag({
+        name,
+        slug,
+        isActive: true
+      })
+      tagIds.push(newTag.id)
+    }
+  }
+
+  return tagIds
+}
+
+export const associatePostTags = async (postId: string, tagIds: string[]) => {
+  // First, remove existing associations
+  await supabase
+    .from('post_tags')
+    .delete()
+    .eq('postId', postId)
+
+  if (tagIds.length === 0) return
+
+  // Insert new associations
+  const associations = tagIds.map(tagId => ({
+    postId,
+    tagId
+  }))
+
+  const { error } = await supabase
+    .from('post_tags')
+    .insert(associations)
+
+  if (error) {
+    console.error('Associate post tags error:', error)
+    throw new Error(`태그 연결 실패: ${error.message}`)
+  }
+}
+
 export const getTagBySlug = async (slug: string) => {
   const { data, error } = await supabase
     .from('tags')

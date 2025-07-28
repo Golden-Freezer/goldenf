@@ -1,12 +1,12 @@
 // Site configuration
 export const SITE_CONFIG = {
-  name: '골든에프 총무블로그',
-  title: '총무 업무 가이드 | 골든에프',
+  name: "GoldenF's BLOG",
+  title: '총무 업무 가이드 | GoldenF\'s BLOG',
   description: '총무 업무에 필요한 실무 가이드, 법무 정보, 인사 관리 노하우를 제공하는 전문 블로그입니다. 총무 담당자를 위한 실용적인 정보와 최신 동향을 확인하세요.',
   url: 'https://goldenf.pages.dev',
   ogImage: '/og-image.jpg',
   author: {
-    name: '골든에프',
+    name: 'GoldenF',
     email: 'contact@goldenf.com',
     twitter: '@goldenf_blog',
   },
