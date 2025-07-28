@@ -23,7 +23,9 @@
       "Bash(git commit:*)",
       "Bash(git push:*)",
       "Bash(rename:*)",
-      "Bash(ren:*)"
+      "Bash(ren:*)",
+      "Bash(if exist cache rmdir /s /q cache)",
+      "Bash(if exist .next rmdir /s /q .next)"
     ],
     "deny": []
   }
